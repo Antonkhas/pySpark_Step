@@ -14,6 +14,3 @@ data = data.groupBy('age').count()
 # Нахождение 5 наиболее часто встречающихся возрастов
 data = data.orderBy(F.asc('age'))
 print(data.show(5))
-
-
-
