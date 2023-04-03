@@ -1,36 +1,26 @@
 from pyspark.sql import SparkSession
+from pyspark.sql.functions import col
 import pyspark.sql.functions as F
-import pandas as pd
-import matplotlib.pyplot as plt
 
 
-# Создание экземпляра SparkSession
-# spark = SparkSession.builder\
-#     .master('local[*]')\
-#     .appName("task-7")\
-#     .getOrCreate()
-#
-# # Создание DataFrame из CSV файла
-# df = spark.read.options(header='True', sep=';') \
-#                   .csv('import_empl_csv.csv')
-#
-# # Группировка данных по отделам и наименованию продукта
-# agg = df.groupBy(F.month("dept_id")) \
-#                     .agg(F.sum("prod"))
-#
-# # Преобразование DataFrame в Pandas DataFrame для построения графиков
-# agg_pd = agg.toPandas()
-#
-# print(df.show())
-#
+# Task 7: Разделение PySpark DataFrame на подмножества на основе условий
 
 
+spark = SparkSession.builder \
+    .appName('Task_7')\
+    .master('local[*]') \
+    .getOrCreate()
 
-# Создание экземпляра SparkSession
-spark = SparkSession.builder.appName("Sales Data").getOrCreate()
+bank = spark.read.csv('bank.csv', sep=';', header=True)
 
-# Создание DataFrame из CSV файла
-sales_df = spark.read.options(header='True', inferSchema='True') \
-                  .csv('/file/path/to/sales_data.csv')
+# Фильтруем записи marital == 'single'
+df1 = bank.filter(col('marital') == 'single')
 
-print(sales_df.show())
+# Фильтруем записи по колонке balance > 1001 - по возрастанию
+df2 = bank.filter(col('balance') > 1001)
+df2 = df2.orderBy(F.asc('balance'))
+
+
+df1.show(5)
+df2.show(5)
+
